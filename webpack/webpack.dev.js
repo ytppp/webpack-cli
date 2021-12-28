@@ -13,6 +13,9 @@ module.exports = merge(base, {
     inline: true, // 文件修改后实时刷新
     historyApiFallback: true, // 不跳转
     hot: true, // 热更新
+    overlay: {
+      errors: false,
+    }, // 在编译过程中有错误，给予窗口提示
   },
   // devServer: {
   //   stats: 'errors-only', // 终端控制台只打印错误日志
