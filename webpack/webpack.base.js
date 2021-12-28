@@ -8,7 +8,6 @@ const NODE_ENV = process.env.NODE_ENV; // 环境状态
 module.exports = {
   entry: {
     index: './src/index.js',
-    two: './src/two.js',
   }, // 入口文件 可以配置多入口
   output: {
     path: path.join(__dirname, '../dist'), // 打包后的文件存放的地方
@@ -21,9 +20,10 @@ module.exports = {
       // 路径简写
       components: path.resolve(__dirname, '../src/components'),
       assets: path.resolve(__dirname, '../src/assets'),
+      pages: path.resolve(__dirname, '../src/pages'),
     },
   },
-  devtool: 'source-map', // 方便调试
+  devtool: 'cheap-module-eval-source-map', // 方便调试
   module: {
     rules: [
       {
@@ -37,8 +37,8 @@ module.exports = {
         test: /\.(c|sc|sa)ss$/, // 解析样式
         use: [
           NODE_ENV === 'production'
-            ? MiniCssExtractPlugin.loader // 分离出来link引入html
-            : 'style-loader', // css整体引入放到head标签里(dev热更新)
+            ? MiniCssExtractPlugin.loader
+            : 'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -48,7 +48,27 @@ module.exports = {
           'postcss-loader',
           'sass-loader',
         ],
-        exclude: /node_modules/,
+      },
+      {
+        test: /\.less$/, // less
+        use: [
+          NODE_ENV === 'production'
+            ? MiniCssExtractPlugin.loader
+            : 'style-loader',
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1 },
+          },
+          'postcss-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              lessOptions: {
+                javascriptEnabled: true, // 启用内联JavaScript
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpe?g|svg|gif)$/, // 正则匹配图片格式名
