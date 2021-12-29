@@ -1,11 +1,13 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin'); // 将js 或者 css 文件可以自动引入到指定的 Html 中
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // 压缩css文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // 抽离css文件
 
+console.log('process.env.NODE_ENV=', process.env.NODE_ENV); // 打印环境变量
+
 const NODE_ENV = process.env.NODE_ENV; // 环境状态
 
-module.exports = {
+const config = {
   entry: {
     index: './src/index.js',
   }, // 入口文件 可以配置多入口
@@ -25,13 +27,29 @@ module.exports = {
   },
   devtool: 'cheap-module-eval-source-map', // 方便调试
   module: {
+    // loader的作用就是将Webpack不认识的内容转化为认识的内容
     rules: [
       {
-        test: /\.(js|jsx)/,
+        test: /\.(js|jsx)$/,
         use: {
           loader: 'babel-loader?cacheDirectory',
         },
         exclude: /node_modules/, // 不转译node_modules里面的文件
+      },
+      {
+        test: /\.css$/, // 解析样式
+        use: [
+          NODE_ENV === 'production'
+            ? MiniCssExtractPlugin.loader
+            : 'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          },
+          'postcss-loader',
+        ],
       },
       {
         test: /\.(c|sc|sa)ss$/, // 解析样式
@@ -97,6 +115,7 @@ module.exports = {
     ],
   },
   plugins: [
+    // 插件的作用，贯穿webpack打包的生命周期，执行不同的任务
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'public/index.html',
@@ -108,4 +127,8 @@ module.exports = {
     }),
     new OptimizeCssAssetsPlugin(),
   ],
+};
+module.exports = (env, argv) => {
+  console.log('argv.mode=', argv.mode); // 打印 mode(模式) 值
+  return config;
 };

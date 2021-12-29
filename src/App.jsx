@@ -4,7 +4,7 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import routers from './router/index';
 
-function APP() {
+function App() {
   return (
     <ConfigProvider locale={zhCN}>
       <Router>
@@ -23,4 +23,4 @@ function APP() {
   );
 }
 
-export default APP;
+export default App;
