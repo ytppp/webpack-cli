@@ -33,6 +33,9 @@ const config = {
         test: /\.(js|jsx)$/,
         use: {
           loader: 'babel-loader?cacheDirectory',
+          options: {
+            presets: ['@babel/preset-react', '@babel/preset-env'],
+          },
         },
         exclude: /node_modules/, // 不转译node_modules里面的文件
       },
