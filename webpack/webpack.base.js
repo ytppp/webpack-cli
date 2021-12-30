@@ -3,11 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin'); // 将js 或者 css �
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // 压缩css文件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // 抽离css文件
 
-console.log('process.env.NODE_ENV=', process.env.NODE_ENV); // 打印环境变量
-
 const NODE_ENV = process.env.NODE_ENV; // 环境状态
 
-const config = {
+module.exports = {
   entry: {
     index: './src/index.js',
   }, // 入口文件 可以配置多入口
@@ -32,27 +30,9 @@ const config = {
       {
         test: /\.(js|jsx)$/,
         use: {
-          loader: 'babel-loader?cacheDirectory',
-          options: {
-            presets: ['@babel/preset-react', '@babel/preset-env'],
-          },
+          loader: 'babel-loader',
         },
         exclude: /node_modules/, // 不转译node_modules里面的文件
-      },
-      {
-        test: /\.css$/, // 解析样式
-        use: [
-          NODE_ENV === 'production'
-            ? MiniCssExtractPlugin.loader
-            : 'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-            },
-          },
-          'postcss-loader',
-        ],
       },
       {
         test: /\.(c|sc|sa)ss$/, // 解析样式
@@ -130,8 +110,4 @@ const config = {
     }),
     new OptimizeCssAssetsPlugin(),
   ],
-};
-module.exports = (env, argv) => {
-  console.log('argv.mode=', argv.mode); // 打印 mode(模式) 值
-  return config;
 };
