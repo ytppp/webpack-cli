@@ -17,7 +17,7 @@ const config = {
     chunkFilename: './static/js/[name].[chunkhash:8].chunk.js',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.json'],
     alias: {
       // 路径简写
       components: path.resolve(__dirname, '../src/components'),
